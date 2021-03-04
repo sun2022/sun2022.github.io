@@ -1,0 +1,1773 @@
+ 
+#database.inc 
+
+<? 
+
+/*数据库服务器*/ 
+
+$dbserver="localhost"; 
+
+/*数据库名*/ 
+
+$databasename="bbs"; 
+
+/*数据库用户名*/ 
+
+$dbusername="root"; 
+
+/*数据库口令*/ 
+
+$dbpassword=""; 
+
+/*分页记录数*/ 
+
+$pagenumber=5; 
+
+/**每页显示的帖子数目**/ 
+
+?> 
+
+
+
+#database.php 
+
+<? 
+
+/*数据库服务器*/ 
+
+$dbserver="localhost"; 
+
+/*数据库名*/ 
+
+$databasename="tbluser"; 
+
+/*数据库用户名*/ 
+
+$dbusername="root"; 
+
+/*数据库口令*/ 
+
+$dbpassword=""; 
+
+/*分页记录数*/ 
+
+
+
+?> 
+
+
+
+#add.php 
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> 
+
+<HTML> 
+
+<HEAD> 
+
+<TITLE> New Document </TITLE> 
+
+<META NAME="Generator" CONTENT="EditPlus"> 
+
+<META NAME="Author" CONTENT=""> 
+
+<META NAME="Keywords" CONTENT=""> 
+
+<META NAME="Description" CONTENT=""> 
+
+</HEAD> 
+
+
+
+<BODY BGCOLOR="#FFFFFF"> 
+
+<FORM METHOD=POST ACTION="do_add.php"> 
+
+用户名:<INPUT TYPE="text" NAME="username"><br> 
+
+密码:<INPUT TYPE="password" name="password"><br> 
+
+标题:<INPUT TYPE="text" NAME="title"><br> 
+
+
+
+内容:<br><TEXTAREA NAME="contents" ROWS="10" COLS="100"></TEXTAREA> 
+
+<INPUT TYPE="submit" value="提交"><INPUT TYPE="reset" value="重来"> 
+
+</FORM> 
+
+</BODY> 
+
+</HTML> 
+
+
+
+
+
+#admin.php 
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> 
+
+
+
+<html> 
+
+<head> 
+
+<title>Untitled</title> 
+
+</head> 
+
+
+
+<body> 
+
+<form action="do_admin.php" method="post" name="admin" id="admin"> 
+管理员:<input type="text" name="admin"><br> 
+
+密码：<input type="password" name="password"><br> 
+
+<input type="submit" name="submit" value="进入"><input type="Reset" value="重置"> 
+
+</form> 
+
+
+
+
+
+</body> 
+
+</html> 
+
+
+
+#admin_content.php 
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> 
+
+
+
+<html> 
+
+<head> 
+
+<title>Untitled</title> 
+
+</head> 
+
+
+
+<body> 
+
+<?php require("database.inc"); 
+
+$id=$HTTP_GET_VARS["id"]; 
+
+$strSql="select * from tiezi where fid='$id' and flag<'9' order by lastdate asc"; 
+
+$dbh=mysql_connect($dbserver,$dbusername,$dbpassword); 
+
+mysql_select_db($databasename); 
+
+$result=mysql_query($strSql,$dbh); 
+
+
+
+
+
+while($record=@mysql_fetch_object($result)){ 
+
+
+
+echo "标题:$record->title"; 
+
+echo "<table align=left><tr><td><a href=delete.php?id=$record->Id&fid=$record->fid>删除</a></td>"; 
+
+echo "<td><a href=view.php?id=$record->Id&flag=$record->flag&fid=$record->fid>"; 
+
+if($record->flag==0){ 
+
+echo " 可视"; 
+
+}else{ 
+
+echo "不可视"; 
+
+} 
+
+echo "</a></td></tr></table>"; 
+
+
+
+echo "<br>作者:<a href=mailto:$record->email>"; 
+
+echo "$record->author</a><br>"; 
+
+echo "发布时间:$record->lastdate<br> "; 
+
+echo "$record->contents<br><br><br><br>"; 
+
+
+
+} 
+
+?> 
+
+<FORM METHOD=POST ACTION="do_reply.php"> 
+
+用户名:<INPUT TYPE="text" NAME="username">未注册<a href=register.php>请注册</a><br> 
+
+密码:<INPUT TYPE="password" name="password"><br> 
+
+标题:<INPUT TYPE="text" NAME="title"><br> 
+
+<input type=hidden name=id value=<?echo $id;?>><br> 
+
+
+
+内容:<br><TEXTAREA NAME="contents" ROWS="10" COLS="100"></TEXTAREA> 
+
+<INPUT TYPE="submit" value="提交"><INPUT TYPE="reset" value="重来"> 
+
+</FORM> 
+
+
+
+
+
+</body> 
+
+</html> 
+
+
+
+#content.php 
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> 
+
+
+
+<html> 
+
+<head> 
+
+<title>Untitled</title> 
+
+</head> 
+
+
+
+<body> 
+
+<?php require("database.inc"); 
+
+$id=$HTTP_GET_VARS["id"]; 
+
+$strSql="select * from tiezi where fid='$id' and flag=1 order by lastdate asc"; 
+
+$dbh=mysql_connect($dbserver,$dbusername,$dbpassword); 
+
+mysql_select_db($databasename); 
+
+$result=mysql_query($strSql,$dbh); 
+
+
+
+
+
+while($record=@mysql_fetch_object($result)){ 
+
+
+
+echo "标题:$record->title"; 
+
+echo "<br>作者:<a href=mailto:$record->email>"; 
+
+echo "$record->author</a><br>"; 
+
+echo "发布时间:$record->lastdate<br> "; 
+
+echo "$record->contents<br><br><br><br>"; 
+
+
+
+} 
+
+?> 
+
+<FORM METHOD=POST ACTION="do_reply.php"> 
+
+用户名:<INPUT TYPE="text" NAME="username">未注册<a href=register.php>请注册</a><br> 
+
+密码:<INPUT TYPE="password" name="password"><br> 
+
+标题:<INPUT TYPE="text" NAME="title"><br> 
+
+<input type=hidden name=id value=<?echo $id;?>><br> 
+
+
+
+内容:<br><TEXTAREA NAME="contents" ROWS="10" COLS="100"></TEXTAREA> 
+
+<INPUT TYPE="submit" value="提交"><INPUT TYPE="reset" value="重来"> 
+
+</FORM> 
+
+
+
+
+
+</body> 
+
+</html> 
+
+
+
+
+
+#delete.php 
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> 
+
+
+
+<html> 
+
+<head> 
+
+<title>Untitled</title> 
+
+</head> 
+
+
+
+<body> 
+
+<?php require("database.inc"); 
+
+$id=$HTTP_GET_VARS["id"]; 
+
+$fid=$HTTP_GET_VARS["fid"]; 
+
+
+
+$dbh=mysql_connect($dbserver,$dbusername,$dbpassword); 
+
+mysql_select_db($databasename); 
+
+$strSql="update tiezi set flag=9 where Id=$id"; 
+
+$result=mysql_query($strSql,$dbh); 
+
+if ($id<>$fid){ 
+
+$strSql="update tiezi set reply=reply-1 where Id=$fid"; 
+
+$result=mysql_query($strSql,$dbh); 
+
+} 
+
+?> 
+
+
+
+<center>操作成功</center> 
+
+<center><a href=admin_content.php?id=<?php echo $fid ?>>返回</a></center> 
+
+</body> 
+
+</html> 
+
+
+
+#do_add.php 
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> 
+
+<HTML> 
+
+<HEAD> 
+
+<TITLE> New Document </TITLE> 
+
+<META NAME="Generator" CONTENT="EditPlus"> 
+
+<META NAME="Author" CONTENT=""> 
+
+<META NAME="Keywords" CONTENT=""> 
+
+<META NAME="Description" CONTENT=""> 
+
+</HEAD> 
+
+
+
+<BODY BGCOLOR="#FFFFFF"> 
+
+
+
+<?php require("database.inc"); 
+
+$username=$HTTP_POST_VARS["username"]; 
+
+$password=$HTTP_POST_VARS["password"]; 
+
+$title=$HTTP_POST_VARS["title"]; 
+
+$contents=$HTTP_POST_VARS["contents"]; 
+
+
+
+$username=htmlspecialchars($username); 
+
+$contents=htmlspecialchars($contents); 
+
+$contents=nl2br($contents); 
+
+$title=htmlspecialchars($title); 
+
+
+
+
+
+$dbh=mysql_connect($dbserver,$dbusername,$dbpassword); 
+
+mysql_select_db($databasename); 
+
+$query="select username,email from tbluser where username='$username' and password='$password'"; 
+
+
+
+$result=mysql_query($query,$dbh); 
+
+$row=@mysql_fetch_row($result); 
+
+if($row<1){ 
+
+echo "用户名或密码输入有误"; 
+
+} 
+
+else { 
+
+$temp=0; 
+
+$email=$row[1]; 
+
+$query="insert into tiezi(author,title,contents,fid,lastdate,email) values('$username','$title','$contents',0,now(),'$email')"; 
+
+$res=mysql_query($query,$dbh); 
+
+$query="update tiezi set fid=id where fid='$temp'"; 
+
+$res=mysql_query($query,$dbh); 
+
+$err = mysql_error(); 
+
+echo "<center>加帖成功</center>"; 
+
+echo "<center><a href=list.php>返回</center>"; 
+
+} 
+
+
+
+?> 
+
+
+
+</BODY> 
+
+</HTML> 
+
+
+
+
+
+#do_admin.php 
+
+<?php require("database.inc"); 
+
+$username=$HTTP_POST_VARS["admin"]; 
+
+$password=$HTTP_POST_VARS["password"]; 
+
+$username=htmlspecialchars($username); 
+
+$dbh=mysql_connect($dbserver,$dbusername,$dbpassword); 
+
+mysql_select_db($databasename); 
+
+$query="select username from tbluser where username='$username' and password='$password' and flag=9"; 
+
+//echo $query; 
+
+$result=mysql_query($query,$dbh); 
+
+$row=@mysql_fetch_row($result); 
+
+if($row<1){ 
+
+echo "傻瓜，你是谁！"; 
+
+}else{ 
+
+?> 
+
+<script language="javascript"> 
+
+function check(){ 
+
+if(document.frm_search.kind.value==""){ 
+
+alert(" 请选择搜索类型"); 
+
+return false; 
+
+} 
+
+if(document.frm_search.contents.value==""){ 
+
+alert("请输入搜索内容"); 
+
+return false; 
+
+} 
+
+return true; 
+
+} 
+
+</script> 
+
+<?php require("database.inc"); 
+
+$method=$HTTP_GET_VARS["method"]; 
+
+if($method<>""){ 
+
+$kind=$HTTP_GET_VARS["kind"]; 
+
+$contents=$HTTP_GET_VARS["contents"]; 
+
+} 
+
+else{ 
+
+$contents=$HTTP_POST_VARS["contents"]; 
+
+$kind=$HTTP_POST_VARS["kind"]; 
+
+} 
+
+if($kind==""){ 
+
+$kind=0; 
+
+} 
+
+
+
+if($contents<>"" and $kind<>""){ 
+
+if ($kind==1){ 
+
+$strSql="select * from tiezi where (author like '%$contents%') and fid=id and flag<9 order by lastdate desc"; 
+
+} 
+
+else if($kind==2){ 
+
+$strSql="select * from tiezi where fid=id and (title like '%$contents%') and flag<9 order by lastdate desc"; 
+
+} 
+
+}else{ 
+
+$strSql="select * from tiezi where fid=id and flag<9 order by lastdate desc"; 
+
+} 
+
+
+
+
+
+$dbh=mysql_connect($dbserver,$dbusername,$dbpassword); 
+
+mysql_select_db($databasename); 
+
+$result=mysql_query($strSql,$dbh); 
+
+$record=@mysql_fetch_object($result); 
+
+
+
+$count=0; 
+
+while($record=@mysql_fetch_object($result)){ 
+
+$count=$count+1; 
+
+} 
+
+if($count<1){ 
+
+echo "对不起，没有符合条件的帖子"; 
+
+}else{ 
+
+$page=$HTTP_GET_VARS["page"]; 
+
+if($page==""){ 
+
+$page=1; 
+
+} 
+
+$max_page=ceil($count/$pagenumber); 
+
+//echo $max_page; 
+
+
+
+?> 
+
+<html> 
+
+<head> 
+
+<title>Untitled</title> 
+
+</head> 
+
+
+
+<body> 
+
+<table > 
+
+<tr> 
+
+<td><a href="register.php">注册</a></td> 
+
+<td>&nbsp</td> 
+
+<td><a href="add.php">发表</td> 
+
+<td></td> 
+
+</tr> 
+
+</table> 
+
+<form action="list2.php" method="post" name=frm_search onsubmit="return check();"> 
+
+
+
+<?php 
+
+$method=$HTTP_GET_VARS["method"]; 
+
+if($method=="forward"){ 
+
+
+
+if($page<$max_page){ 
+
+$page=$page+1; 
+
+} 
+
+}else if($method=="back"){ 
+
+
+
+if($page>1){ 
+
+$page=$page-1; 
+
+} 
+
+} 
+
+?> 
+
+<table> 
+
+<tr> 
+
+<td> 
+
+<?php 
+
+
+
+if ($page>1){ 
+
+
+
+echo "<a href=list2.php?page=$page&method=back&kind=$kind&contents=$contents> 
+
+上一页</a>"; 
+
+
+
+}else{ 
+
+echo "首页"; 
+
+} 
+
+?> 
+
+
+
+</td> 
+
+<td> 
+
+<?php 
+
+if($page<$max_page){ 
+
+
+
+
+
+echo "<a href=list2.php?page=$page&method=forward&kind=$kind&contents=$contents>下一页</a>"; 
+
+}else{ 
+
+
+
+echo "尾页"; 
+
+} 
+
+
+
+?> 
+
+
+
+</td> 
+
+<td><select name="kind"> 
+
+<option value=0 <?php if($kind==0){echo(selected);}?>>选择搜索</option> 
+
+<option value=1 <?php if($kind==1){echo(selected);}?>>作者</option> 
+
+<option value=2 <?php if($kind==2){echo(selected);}?>>标题</option> 
+
+</select></td> 
+
+<td><input type="text" name="contents" size="10" value=<?php echo($contents);?>></td> 
+
+<td><input type="submit" name="submit" value="开始搜索"></td> 
+
+
+
+</tr> 
+
+</table> 
+
+</form> 
+
+<table align="center"> 
+
+<tr> 
+
+<td width=200>标题</td> 
+
+<td width=100>作者</td> 
+
+<td width=100>回复数</td> 
+
+<td width=100>发布时间</td> 
+
+<td></td> 
+
+<td></td> 
+
+</tr> 
+
+<?php 
+
+$result=mysql_query($strSql,$dbh); 
+
+
+
+for($i=0;$i<($page-1)*$pagenumber;$i++){ 
+
+$record=@mysql_fetch_object($result); 
+
+} 
+
+for($i=0;$i<$pagenumber;$i++){ 
+
+$record=@mysql_fetch_object($result); 
+
+/*if(i%2==0){ 
+
+$backcolor="00000"; 
+
+}else{ 
+
+$backcolor="00000"; 
+
+}*/ 
+
+$id=$record->Id; 
+
+
+
+$title=$record->title; 
+
+
+
+$author=$record->author; 
+
+$email=$record->email; 
+
+echo "<tr bgcolor=$backcolor><td>"; 
+
+echo "<a href=admin_content.php?id=$id>"; 
+
+echo $title; 
+
+echo "</a>"; 
+
+echo "</td><td>"; 
+
+echo "<a href=mailto:$email>"; 
+
+echo $author; 
+
+echo "</a>"; 
+
+echo "</td><td>"; 
+
+echo $record->reply; 
+
+echo "</td><td>"; 
+
+echo $record->lastdate; 
+
+echo "</td></tr>"; 
+
+
+
+} 
+
+?> 
+
+</table> 
+
+
+
+
+
+</body> 
+
+</html> 
+
+<?php 
+
+} 
+
+?> 
+
+<?php 
+
+} 
+
+?> 
+
+
+
+
+
+#do_register.php 
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> 
+
+
+
+<?php require("database.inc");?> 
+
+
+
+<head> 
+
+<title>Untitled</title> 
+
+</head> 
+
+
+
+<body> 
+
+<?php 
+
+$username=$HTTP_POST_VARS['username']; 
+
+$password1=$HTTP_POST_VARS['password1']; 
+
+$email=$HTTP_POST_VARS['email']; 
+
+
+
+$username=htmlspecialchars($username); 
+
+$email=htmlspecialchars($email); 
+
+
+
+
+
+
+
+
+
+$dbh=mysql_connect($dbserver,$dbusername,$dbpassword); 
+
+mysql_select_db($databasename); 
+
+$query="select username from tbluser where username='$username'"; 
+
+//echo $query; 
+
+$result=mysql_query($query,$dbh); 
+
+$row=@mysql_fetch_row($result); 
+
+
+
+//echo $row; 
+
+if($row<1){ 
+
+
+
+$query="insert into tbluser(username,password,email) values ('$username','$password1','$email')"; 
+
+//echo $query; 
+
+$res = mysql_query($query, $dbh); 
+
+$err = mysql_error(); 
+
+echo "<center>注册成功</center>"; 
+
+echo "<center><a href=list.php>返回</a></center>"; 
+
+} 
+
+else{ 
+
+echo "用户名已经存在，请重新输入"; 
+
+} 
+
+?> 
+
+
+
+
+
+
+
+</body> 
+
+</html> 
+
+
+
+#do_reply.php 
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> 
+
+<HTML> 
+
+<HEAD> 
+
+<TITLE> New Document </TITLE> 
+
+<META NAME="Generator" CONTENT="EditPlus"> 
+
+<META NAME="Author" CONTENT=""> 
+
+<META NAME="Keywords" CONTENT=""> 
+
+<META NAME="Description" CONTENT=""> 
+
+</HEAD> 
+
+
+
+<BODY BGCOLOR="#FFFFFF"> 
+
+
+
+<?php require("database.inc"); 
+
+$username=$HTTP_POST_VARS["username"]; 
+
+$password=$HTTP_POST_VARS["password"]; 
+
+$title=$HTTP_POST_VARS["title"]; 
+
+$contents=$HTTP_POST_VARS["contents"]; 
+
+$id=$HTTP_POST_VARS["id"]; 
+
+
+
+$username=htmlspecialchars($username); 
+
+$contents=htmlspecialchars($contents); 
+
+$contents=nl2br($contents); 
+
+$title=htmlspecialchars($title); 
+
+
+
+$dbh=mysql_connect($dbserver,$dbusername,$dbpassword); 
+
+mysql_select_db($databasename); 
+
+$query="select username,email from tbluser where username='$username' and password='$password'"; 
+
+
+
+$result=mysql_query($query,$dbh); 
+
+$row=@mysql_fetch_row($result); 
+
+if($row<1){ 
+
+echo "用户名或密码输入有误"; 
+
+} 
+
+else { 
+
+$fid=$id; 
+
+$email=$row[1]; 
+
+$query="insert into tiezi(author,title,contents,fid,lastdate,email) values('$username','$title','$contents','$fid',now(),'$email')"; 
+
+$res=mysql_query($query,$dbh); 
+
+$query="update tiezi set reply=reply+1 where id='$id'"; 
+
+$res=mysql_query($query,$dbh); 
+
+$err = mysql_error(); 
+
+} 
+
+
+
+?> 
+
+<center>回复成功</center> 
+
+<center><a href=content.php?id=<? echo $id?>>返回</a></center> 
+
+</BODY> 
+
+</HTML> 
+
+
+
+#list.php 
+
+
+
+<script language="javascript"> 
+
+function check(){ 
+
+if(document.frm_search.kind.value==""){ 
+
+alert(" 请选择搜索类型"); 
+
+return false; 
+
+} 
+
+if(document.frm_search.contents.value==""){ 
+
+alert("请输入搜索内容"); 
+
+return false; 
+
+} 
+
+return true; 
+
+} 
+
+</script> 
+
+<?php require("database.inc"); 
+
+$method=$HTTP_GET_VARS["method"]; 
+
+if($method<>""){ 
+
+$kind=$HTTP_GET_VARS["kind"]; 
+
+$contents=$HTTP_GET_VARS["contents"]; 
+
+} 
+
+else{ 
+
+$contents=$HTTP_POST_VARS["contents"]; 
+
+$kind=$HTTP_POST_VARS["kind"]; 
+
+} 
+
+if($kind==""){ 
+
+$kind=0; 
+
+} 
+
+
+
+if($contents<>"" and $kind<>""){ 
+
+if ($kind==1){ 
+
+$strSql="select * from tiezi where (author like '%$contents%') and fid=id and flag=1 order by lastdate desc"; 
+
+} 
+
+else if($kind==2){ 
+
+$strSql="select * from tiezi where fid=id and flag=1 and (title like '%$contents%') order by lastdate desc"; 
+
+} 
+
+}else{ 
+
+$strSql="select * from tiezi where fid=id and flag=1 order by lastdate desc"; 
+
+} 
+
+
+
+
+
+$dbh=mysql_connect($dbserver,$dbusername,$dbpassword); 
+
+mysql_select_db($databasename); 
+
+$result=mysql_query($strSql,$dbh); 
+
+$record=@mysql_fetch_object($result); 
+
+
+
+$count=0; 
+
+while($record=@mysql_fetch_object($result)){ 
+
+$count=$count+1; 
+
+} 
+
+if($count<1){ 
+
+echo "对不起，没有符合条件的帖子"; 
+
+}else{ 
+
+$page=$HTTP_GET_VARS["page"]; 
+
+if($page==""){ 
+
+$page=1; 
+
+} 
+
+$max_page=ceil($count/$pagenumber); 
+
+//echo $max_page; 
+
+
+
+?> 
+
+<html> 
+
+<head> 
+
+<title>Untitled</title> 
+
+</head> 
+
+
+
+<body> 
+
+<table > 
+
+<tr> 
+
+<td><a href="register.php">注册</a></td> 
+
+<td>&nbsp</td> 
+
+<td><a href="add.php">发表</td> 
+
+<td></td> 
+
+</tr> 
+
+</table> 
+
+<form action="list.php" method="post" name=frm_search onsubmit="return check();"> 
+
+
+
+<?php 
+
+$method=$HTTP_GET_VARS["method"]; 
+
+if($method=="forward"){ 
+
+
+
+if($page<$max_page){ 
+
+$page=$page+1; 
+
+} 
+
+}else if($method=="back"){ 
+
+
+
+if($page>1){ 
+
+$page=$page-1; 
+
+} 
+
+} 
+
+?> 
+
+<table> 
+
+<tr> 
+
+<td> 
+
+<?php 
+
+
+
+if ($page>1){ 
+
+
+
+echo "<a href=list.php?page=$page&method=back&kind=$kind&contents=$contents> 
+
+上一页</a>"; 
+
+
+
+}else{ 
+
+echo "首页"; 
+
+} 
+
+?> 
+
+
+
+</td> 
+
+<td> 
+
+<?php 
+
+if($page<$max_page){ 
+
+
+
+
+
+echo "<a href=list.php?page=$page&method=forward&kind=$kind&contents=$contents>下一页</a>"; 
+
+}else{ 
+
+
+
+echo "尾页"; 
+
+} 
+
+
+
+?> 
+
+
+
+</td> 
+
+<td><select name="kind"> 
+
+<option value=0 <?php if($kind==0){echo(selected);}?>>选择搜索</option> 
+
+<option value=1 <?php if($kind==1){echo(selected);}?>>作者</option> 
+
+<option value=2 <?php if($kind==2){echo(selected);}?>>标题</option> 
+
+</select></td> 
+
+<td><input type="text" name="contents" size="10" value=<?php echo($contents);?>></td> 
+
+<td><input type="submit" name="submit" value="开始搜索"></td> 
+
+<td align=left><a href=admin.php>管理员入口</a></td> 
+
+</tr> 
+
+</table> 
+
+</form> 
+
+<table align="center"> 
+
+<tr> 
+
+<td width=200>标题</td> 
+
+<td width=100>作者</td> 
+
+<td width=100>回复数</td> 
+
+<td width=100>发布时间</td> 
+
+</tr> 
+
+<?php 
+
+$result=mysql_query($strSql,$dbh); 
+
+
+
+for($i=0;$i<($page-1)*$pagenumber;$i++){ 
+
+$record=@mysql_fetch_object($result); 
+
+} 
+
+for($i=0;$i<$pagenumber;$i++){ 
+
+$record=@mysql_fetch_object($result); 
+
+/*if(i%2==0){ 
+
+$backcolor="00000"; 
+
+}else{ 
+
+$backcolor="00000"; 
+
+}*/ 
+
+$id=$record->Id; 
+
+
+
+$title=$record->title; 
+
+
+
+$author=$record->author; 
+
+$email=$record->email; 
+
+echo "<tr bgcolor=$backcolor><td>"; 
+
+echo "<a href=content.php?id=$id>"; 
+
+echo $title; 
+
+echo "</a>"; 
+
+echo "</td><td>"; 
+
+echo "<a href=mailto:$email>"; 
+
+echo $author; 
+
+echo "</a>"; 
+
+echo "</td><td>"; 
+
+echo $record->reply; 
+
+echo "</td><td>"; 
+
+echo $record->lastdate; 
+
+echo "</td></tr>"; 
+
+
+
+} 
+
+?> 
+
+</table> 
+
+
+
+
+
+</body> 
+
+</html> 
+
+<?php 
+
+} 
+
+?> 
+
+
+
+
+
+#register.php 
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> 
+
+<script language="javascript"> 
+
+function IsEmail(item){ 
+
+var etext 
+
+var elen 
+
+var i 
+
+var aa 
+
+etext=item 
+
+elen=etext.length 
+
+if (elen<5) 
+
+return true; 
+
+i= etext.indexOf("@",0) 
+
+if (i==0 || i==-1 || i==elen-1) 
+
+return true; 
+
+else 
+
+{if (etext.indexOf("@",i+1)!=-1) 
+
+return true;} 
+
+if (etext.indexOf("..",i+1)!=-1) 
+
+return true; 
+
+i=etext.indexOf(".",0) 
+
+if (i==0 || i==-1 || etext.charAt(elen-1)=='.') 
+
+return true; 
+
+if ( etext.charAt(0)=='-' || etext.charAt(elen-1)=='-') 
+
+return true; 
+
+if ( etext.charAt(0)=='_' || etext.charAt(elen-1)=='_') 
+
+return true; 
+
+for (i=0;i<=elen-1;i++) 
+
+{ aa=etext.charAt(i) 
+
+if (!((aa=='.') || (aa=='@') || (aa=='-') ||(aa=='_') || (aa>='0' && aa<='9') || (aa>='a' && aa<='z') || (aa>='A' && aa<='Z'))) 
+
+return true; 
+
+} 
+
+return false; 
+
+} 
+
+function check(){ 
+
+var password1; 
+
+var password2; 
+
+if (document.register.username.value==""){ 
+
+alert("请输入正确用户名"); 
+
+return false; 
+
+} 
+
+password1=document.register.password1.value; 
+
+password2=document.register.password2.value; 
+
+if(password1=="" ||password2=="" ||password1!=password2){ 
+
+alert("密码输入不正确"); 
+
+return false; 
+
+} 
+
+if(password1.length<4){ 
+
+alert("密码长度最少为5位"); 
+
+return false; 
+
+} 
+
+if(IsEmail(document.register.email.value)){ 
+
+alert("email不正确"); 
+
+return false; 
+
+} 
+
+return true; 
+
+} 
+
+</script> 
+
+<html> 
+
+<head> 
+
+<title>用户注册</title> 
+
+</head> 
+
+
+
+<body> 
+
+<form action="do_register.php" method="post" name="register" onsubmit="return check();"> 
+
+<table> 
+
+<tr> 
+
+<td>姓名:</td> 
+
+<td><input type="text" name="username" maxlength="20"></td> 
+
+<td></td> 
+
+<td></td> 
+
+</tr> 
+
+<tr> 
+
+<td>密码:</td> 
+
+<td><input type="password" name="password1" maxlength="12"></td> 
+
+<td>确认密码:</td> 
+
+<td><input type="password" name="password2" maxlength="12"></td> 
+
+</tr> 
+
+<tr> 
+
+<td>E-mail:</td> 
+
+<td><input type="text" name="email" maxlength="50"></td> 
+
+<td></td> 
+
+<td></td> 
+
+</tr> 
+
+<tr> 
+
+<td><input type="submit" name="submit" value="提交"></td> 
+
+<td><input type="Reset" value="重置 "></td> 
+
+<td></td> 
+
+<td></td> 
+
+</tr> 
+
+</table> 
+
+
+
+</form> 
+
+
+
+
+
+</body> 
+
+</html> 
+
+
+
+
+
+#replay.php 
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> 
+
+<HTML> 
+
+<HEAD> 
+
+<TITLE> New Document </TITLE> 
+
+<META NAME="Generator" CONTENT="EditPlus"> 
+
+<META NAME="Author" CONTENT=""> 
+
+<META NAME="Keywords" CONTENT=""> 
+
+<META NAME="Description" CONTENT=""> 
+
+</HEAD> 
+
+
+
+<BODY BGCOLOR="#FFFFFF"> 
+
+<?php 
+
+$id=11; 
+
+?> 
+
+<FORM METHOD=POST ACTION="do_reply.php"> 
+
+用户名:<INPUT TYPE="text" NAME="username"><br> 
+
+密码:<INPUT TYPE="password" name="password"><br> 
+
+标题:<INPUT TYPE="text" NAME="title"><br> 
+
+<input type=hidden name=id value=<?echo $id;?>><br> 
+
+
+
+内容:<br><TEXTAREA NAME="contents" ROWS="10" COLS="100"></TEXTAREA> 
+
+<INPUT TYPE="submit" value="提交"><INPUT TYPE="reset" value="重来"> 
+
+</FORM> 
+
+</BODY> 
+
+</HTML> 
+
+
+
+
+
+#view.php 
+
+<?php require("database.inc"); 
+
+$flag=$HTTP_GET_VARS["flag"]; 
+
+$id=$HTTP_GET_VARS["id"]; 
+
+$fid=$HTTP_GET_VARS["fid"]; 
+
+
+
+if($flag==0){ 
+
+$message="修改成为可见"; 
+
+$flag=1; 
+
+}else{ 
+
+$message="修改成为不可见"; 
+
+$flag=0; 
+
+} 
+
+$strSql="update tiezi set flag=$flag where Id=$id"; 
+
+$dbh=mysql_connect($dbserver,$dbusername,$dbpassword); 
+
+mysql_select_db($databasename); 
+
+$result=mysql_query($strSql,$dbh); 
+
+
+
+?> 
+
+
+
+<html> 
+
+<head> 
+
+<title>Untitled</title> 
+
+</head> 
+
+
+
+<body> 
+
+
+
+<center><?php echo $message ?></center> 
+
+<center><a href=admin_content.php?id=<?php echo $fid ?>>返回</a></center> 
+
+
+
+</body> 
+
+</html> 
